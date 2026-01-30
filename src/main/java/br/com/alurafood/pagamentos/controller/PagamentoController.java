@@ -2,6 +2,7 @@ package br.com.alurafood.pagamentos.controller;
 
 import br.com.alurafood.pagamentos.dto.PagamentoDto;
 import br.com.alurafood.pagamentos.service.PagamentoService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class PagamentoController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<PagamentoDto> cadastrar(
             @RequestBody @Valid PagamentoDto dto,
             UriComponentsBuilder uriBuilder
@@ -44,6 +46,7 @@ public class PagamentoController {
     }
 
     @PutMapping("/{id}")
+    @Transactional
     public ResponseEntity<PagamentoDto> atualizar(
             @PathVariable @NotNull Long id,
             @RequestBody @Valid PagamentoDto dto
@@ -53,6 +56,7 @@ public class PagamentoController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<PagamentoDto> remover(@PathVariable @NotNull Long id) {
         service.excluirPagamento(id);
         return ResponseEntity.noContent().build();
