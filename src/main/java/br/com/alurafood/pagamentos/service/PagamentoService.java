@@ -34,9 +34,11 @@ public class PagamentoService {
 
     public PagamentoDto obterPorId(Long id) {
         Pagamento pagamento = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(EntityNotFoundException::new);
 
-        return modelMapper.map(pagamento, PagamentoDto.class);
+        PagamentoDto dto = modelMapper.map(pagamento, PagamentoDto.class);
+        dto.setItens(pedido.obterItensDoPedido(pagamento.getPedidoId()).getItens());
+        return dto;
     }
 
     public PagamentoDto criarPagamento(PagamentoDto dto) {
@@ -80,4 +82,5 @@ public class PagamentoService {
         pagamento.get().setStatus(Status.CONFIRMADO_SEM_INTEGRACAO);
         repository.save(pagamento.get());
     }
+
 }
