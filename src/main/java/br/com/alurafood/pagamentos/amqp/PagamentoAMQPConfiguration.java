@@ -1,7 +1,6 @@
 package br.com.alurafood.pagamentos.amqp;
 
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -10,16 +9,16 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
 
 @Configuration
 public class PagamentoAMQPConfiguration {
 
-    @Bean
-    public Queue criaFila() {
-//        return new Queue("pagamento.concluido", false); // ou
-        return QueueBuilder.durable("pagamento.concluido").build();
-    }
+    // vai estar no Exchange
+//    @Bean
+//    public Queue criaFila() {
+////        return new Queue("pagamento.concluido", false); // ou
+//        return QueueBuilder.durable("pagamento.concluido").build();
+//    }
 
     @Bean
     public RabbitAdmin criaRabbitAdmin(ConnectionFactory connectionFactory) {
@@ -42,6 +41,11 @@ public class PagamentoAMQPConfiguration {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter);
         return rabbitTemplate;
+    }
+
+    @Bean
+    public FanoutExchange fanoutExchange() {
+        return new FanoutExchange("pagamento.ex");
     }
 
 }
